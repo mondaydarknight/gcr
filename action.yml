@@ -12,7 +12,6 @@ inputs:
   dockerfile:
     description: Dockerfile that will build the image.
     required: false
-    default: Dockerfile
   gcr_auth_key:
     description: Google cloud platform service key file as plain text.
     required: true

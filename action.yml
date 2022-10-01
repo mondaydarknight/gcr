@@ -27,6 +27,7 @@ inputs:
   tags:
     description: Tags for the docker build defaults to latest, always tags with commit hash of the repo checkout separated by commas.
     required: false
+    type: string
     default: latest
 runs:
   using: docker

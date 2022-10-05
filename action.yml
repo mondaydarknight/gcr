@@ -1,0 +1,33 @@
+name: gcr-action
+author: UPN
+description: Building and pushing docker image to Google Cloud Registry
+inputs:
+  build_args:
+    description: Pass a list of env vars as build-args for docker-build separated by commas.
+    required: false
+  context:
+    description: Docker build context.
+    required: false
+    default: '.'
+  dockerfile:
+    description: Dockerfile that will build the image.
+    required: false
+  gcr_auth_key:
+    description: Google cloud platform service key file as plain text.
+    required: true
+  image:
+    description: Docker image name.
+    required: true
+  project_id:
+    description: GCR project ID.
+    required: true
+  registry:
+    description: The registry where the image should be pushed.
+    required: true
+  tags:
+    description: Tags for the docker build defaults to latest, always tags with commit hash of the repo checkout separated by commas.
+    required: false
+    default: latest
+runs:
+  using: docker
+  image: Dockerfile

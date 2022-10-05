@@ -1,0 +1,49 @@
+name: build-push-gcr
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+jobs:
+  build-push-gcr:
+    name: Building and pushing docker image to registry.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Building and pushing docker image to registry.
+        uses: ./
+        with:
+          dockerfile: ./test/Dockerfile.test
+          gcr_auth_key: ${{ secrets.GCR_AUTH_KEY }}
+          registry: asia.gcr.io
+          project_id: mamilove-160706
+          image: test/helloworld
+          tags: ${{ github.sha }}
+          context: ./test
+  test-image:
+    name: Testing the image
+    needs: [build-push-gcr]
+    runs-on: ubuntu-latest
+    container:
+      image: asia.gcr.io/mamilove-160706/test/helloworld:${{ github.sha }}
+      credentials:
+        username: _json_key
+        password: ${{ secrets.GCR_AUTH_KEY }}
+    steps:
+      - name: Testing the image
+        run: exit $([[ "$(/entrypoint.sh)" == "Hello world" ]])
+  cleanup:
+    name: Cleaning up images
+    needs: [build-push-gcr, test-image]
+    if: always()
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: ${{ secrets.GCR_AUTH_KEY }}
+      - name: Delete images
+        run: gcloud container images delete asia.gcr.io/mamilove-160706/test/helloworld:${{ github.sha }} --force-delete-tags --quiet

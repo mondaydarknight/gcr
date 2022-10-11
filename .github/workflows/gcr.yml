@@ -1,10 +1,7 @@
 name: build-push-gcr
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
+  pull_request_target:
+    types: [opened, reopened, synchronize]
 jobs:
   build-push-gcr:
     name: Building and pushing docker image to registry.

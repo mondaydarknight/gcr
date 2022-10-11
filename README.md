@@ -1,4 +1,6 @@
 # GCR plugin
+![workflow status](https://github.com/UPN-TW/gcr/actions/workflows/gcr.yml/badge.svg)
+
 An action to build docker image and push to Google Cloud Registry.
 
 ## Usage

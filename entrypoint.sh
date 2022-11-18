@@ -10,13 +10,15 @@ echo '::endgroup::'
 echo '::group::Build docker image'
 build_args=''
 file_arg=''
+target_arg=''
 [[ ! -z $INPUT_DOCKERFILE ]] && file_arg="--file ${INPUT_DOCKERFILE}"
+[[ ! -z $INPUT_TARGET ]] && target_arg="--target ${INPUT_TARGET}"
 if [[ ! -z "${INPUT_BUILD_ARGS}" ]]; then
     for arg in $(echo "${INPUT_BUILD_ARGS}" | tr ',' '\n'); do
         build_args="${build_args} --build-arg ${arg}"
     done
 fi
-if ! docker build ${build_args} -t ${INPUT_IMAGE} ${file_arg} ${INPUT_CONTEXT}; then
+if ! docker build ${build_args} -t ${INPUT_IMAGE} ${file_arg} ${target_arg} ${INPUT_CONTEXT}; then
     echo 'Failed to build docker image'
     exit 1
 fi
